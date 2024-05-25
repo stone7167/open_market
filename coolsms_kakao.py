@@ -1,11 +1,5 @@
-import json
-import time
-import datetime
-import uuid
-import hmac
-import hashlib
-import requests
-import platform
+import json, time, datetime, uuid, hmac, hashlib, requests, platform
+import security as sec
 
 # 아래 값은 필요시 수정
 protocol = 'https'
@@ -49,8 +43,8 @@ def get_url(path):
 
 def send_many(parameter):
     # 반드시 관리 콘솔 내 발급 받으신 API KEY, API SECRET KEY를 입력해주세요
-    api_key = 'NCSEN7AT6LZUCWS5'
-    api_secret = '8EGIQNUUSSEX0UGQPSIMLNDKUWT5DQYY'
+    api_key = sec.coolsms_api_key
+    api_secret = sec.coolsms_api_secret
     parameter['agent'] = {
         'sdkVersion': 'python/4.2.0',
         'osPlatform': platform.platform() + " | " + platform.python_version()

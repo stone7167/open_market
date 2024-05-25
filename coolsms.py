@@ -1,11 +1,12 @@
 import sys
+import security as sec
 from sdk.api.message import Message
 from sdk.exceptions import CoolsmsException
 
 def send_sms(to, text):
-    api_key = 'NCSEN7AT6LZUCWS5' # API KEY
-    api_secret = '8EGIQNUUSSEX0UGQPSIMLNDKUWT5DQYY' # API 보안키
-    from_ = '01074606675' # 보내는 번호
+    api_key = sec.coolsms_api_key # API KEY
+    api_secret = sec.coolsms_api_secret # API 보안키
+    from_ = sec.send_number # 보내는 번호
     type = 'sms'  # 'sms', 'lms', 'mms', 'ata' 중 선택 | 메시지 타입
 
     params = {
