@@ -6,5 +6,6 @@ Copyright ⓒ 2024. Tomorrow Days Co. All rights reserved.
 Open ai chat GPT 4.0
 투모로우데이즈 코드스톤사업부
 ### 프로젝트 사용법
-database/(shop_name).db
-license/db
+open_market/database/(shop_name).db
+open_market/license.db
+open_market/security.py
