@@ -5,3 +5,6 @@ Copyright ⓒ 2024. Tomorrow Days Co. All rights reserved.
 ### 프로그래머 정보
 Open ai chat GPT 4.0
 투모로우데이즈 코드스톤사업부
+### 프로젝트 사용법
+database/(shop_name).db
+license/db
