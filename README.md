@@ -1,7 +1,7 @@
-저작권 및 사용권 정보
+### 저작권 및 사용권 정보
 CC BY-NC
 Copyright ⓒ 2024. 투모로우데이즈 Co. All rights reserved.
 Copyright ⓒ 2024. Tomorrow Days Co. All rights reserved.
-프로그래머 정보
+### 프로그래머 정보
 Open ai chat GPT 4.0
 투모로우데이즈 코드스톤사업부
