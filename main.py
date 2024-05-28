@@ -1,6 +1,9 @@
-﻿import datetime, random, ast, threading, traceback, smtplib, json
+﻿import datetime, random, ast, threading, traceback, smtplib
 import randomstring, os, sqlite3, hashlib, requests, threading, time
-import coolsms, coolsms_kakao, security as sec, toss, naver
+import coolsms, coolsms_kakao
+import toss
+import naver
+import pushbullet
 from flask import Flask, flash, render_template, request
 from flask import redirect, url_for, session, abort, jsonify
 from discord_webhook import DiscordWebhook, DiscordEmbed
@@ -8,6 +11,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from datetime import timedelta, datetime
 from flask_mail import Mail, Message
+import security as sec
 
 app = Flask(__name__)
 mail = Mail(app)
@@ -809,56 +813,21 @@ def bank_charge(name):
                             name_id = session["id"]
 
                             server_info = server_info_get(name)
-                            push_pin = server_info[11]
+                            auth_token = server_info[11]
 
-                            if push_pin == None or push_pin == "":
-                                return "ok"
+                            if auth_token == None or auth_token == "":
+                                return "계좌이체가 등록되어있지 않은 상점입니다!"
 
-                            jsondata = {
-                                "token": push_pin,
-                                "name": bank_name,
-                                "amount": int(amount)
-                            }
-                            register = requests.post("http://127.0.0.1:4040/register", json=jsondata)
-                            register_response = register.json()
-                            bank_session_id = register_response["id"]
-                            print(f"[푸시불렛] {bank_session_id}")
+                            def on_charge_success():
+                                con = sqlite3.connect(db(name))
+                                cur = con.cursor()
+                                cur.execute("DELETE FROM account_charge WHERE id = ?;", (name_id,))
+                                con.commit()
+                                cur.execute("UPDATE users SET money = money + ? WHERE id = ?;", (int(amount), name_id,))
+                                con.commit()
+                                con.close()
 
-                            def waiting():
-                                try:
-                                    time.sleep(5)
-                                    jsondata = {
-                                        "id": bank_session_id
-                                    }
-                                    result = requests.post("http://127.0.0.1:4040/get", json=jsondata)
-                                    if result.status_code != 200:
-                                        # 여기서 바로 예외를 발생시키는 대신, 오류 메시지를 로깅하거나 사용자에게 반환할 수 있는 방법을 고려하세요.
-                                        print("계좌 충전 요청 실패: 응답 상태 코드가 200이 아닙니다.")
-                                        return False
-                                    result_json = result.json()
-
-                                    if result_json.get("result") == None:
-                                        print(f"[푸시불렛] 서버에서 잘못된 응답을 반환하였습니다: {result.text}")
-                                        return False
-
-                                    if result_json["result"] == False:
-                                        return waiting()
-                                    if result_json["result"] == True:
-                                        con = sqlite3.connect(db(name))
-                                        cur = con.cursor()
-                                        cur.execute("DELETE FROM account_charge WHERE id = ?;", (name_id,))
-                                        con.commit()
-                                        cur.execute("UPDATE users SET money = money + ? WHERE id = ?;", (int(amount), name_id,))
-                                        con.commit()
-                                        con.close()
-                                        return True
-                                except Exception as e:
-                                    print("[푸시불렛] 오류가 발생하였습니다")
-                                    print(e)
-                                    return False
-
-                            t1 = threading.Thread(target=waiting, args=())
-                            t1.start()
+                            pushbullet.register(auth_token, bank_name, int(amount), on_charge_success)
 
                             return "ok"
                         else:
@@ -2353,7 +2322,7 @@ def request_password_reset(name):
         # SMS 발송
         to = request.form['phone_number']
         text = f'''[코드스톤]
-비밀번호 초기화를 위한 인증번호 : {verification_code}'''
+비밀번호 재설정을 위한 인증번호 : {verification_code}'''
 
         message = {
             'messages': [{
@@ -2537,7 +2506,7 @@ def send_sms():
                     'templateId': sec.kakao_templateid,
                     'variables': {
                         '#{verify_code}': verification_code,
-                        '#{activity}': "비밀번호 재설정"
+                        '#{activity}': "가입인증"
                     }
                 }
             }]
