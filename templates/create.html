@@ -36,8 +36,12 @@
                     data: $("form").serialize()
                 }).done(function (data) {
                     if (data == "success") {
-                        location.href = "https://stonecl.kr/" + shop_name
+                        toastr.success("비밀번호가 초기화되었습니다!\n3초 후에 로그인 페이지로 이동합니다.");
+                        setTimeout(() => {
+                            location.href = "/{{shop_name}}/login";
+                        }, 3000);
                     } else {
+                        toastr.success("샵을 생성하는 과정에서 오류가 발생되었습니다.");
                         toastr.error(data);
                     }
                 })

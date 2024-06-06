@@ -160,6 +160,10 @@ def main_page():
 def discord_link():
     return redirect(sec.discord_invite)
 
+@app.route("/music_qwer", methods=["GET"])
+def music_qwer():
+    return render_template("./music/QWER-worry.mp3")
+
 @app.route("/tos", methods=["GET"])
 def tos():
     return render_template("./tos.html")
@@ -2536,4 +2540,4 @@ def not_found_error(error):
     return render_template("./404.html")
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=80)
+    app.run(host="0.0.0.0", port=5000)
