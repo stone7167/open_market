@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>장바구니 페이지</title>
+<style>
+    body {
+        background-color: #242434;
+    }
+  .cart-item {
+    margin-bottom: 20px;
+  }
+</style>
+</head>
+<body>
+
+<h2>장바구니</h2>
+<p>상품정보</p>
+
+<div id="cart-items">
+  <!-- 여기에 상품 목록이 동적으로 추가됩니다 -->
+</div>
+
+<p>총 가격: <span id="total-price">0</span>원</p>
+
+<script>
+// 상품 목록 예시
+const products = [
+  { id: 1, name: "상품 A", price: 10000 },
+  { id: 2, name: "상품 B", price: 20000 },
+  { id: 3, name: "상품 C", price: 30000 },
+];
+
+// 상품을 화면에 표시하는 함수
+function displayProducts() {
+  const cartItems = document.getElementById("cart-items");
+
+  products.forEach(product => {
+    const itemElement = document.createElement("div");
+    itemElement.classList.add("cart-item");
+    itemElement.innerHTML = `
+      <p>${product.name} - ${product.price}원</p>
+      <input type="number" value="0" min="0" onchange="updateTotalPrice()" />
+    `;
+    cartItems.appendChild(itemElement);
+  });
+}
+
+// 총 가격을 업데이트하는 함수
+function updateTotalPrice() {
+  let totalPrice = 0;
+  const inputs = document.querySelectorAll("#cart-items input");
+  
+  inputs.forEach((input, index) => {
+    const quantity = parseInt(input.value);
+    const price = products[index].price;
+    totalPrice += quantity * price;
+  });
+  
+  document.getElementById("total-price").innerText = totalPrice;
+}
+
+// 페이지가 로드될 때 상품 목록을 표시
+window.onload = function() {
+  displayProducts();
+};
+</script>
+</body>
+</html>
