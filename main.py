@@ -160,9 +160,9 @@ def main_page():
 def discord_link():
     return redirect(sec.discord_invite)
 
-@app.route("/music_qwer", methods=["GET"])
+@app.route("/music", methods=["GET"])
 def music_qwer():
-    return render_template("./music/QWER-worry.mp3")
+    return render_template("./music.html")
 
 @app.route("/tos", methods=["GET"])
 def tos():
